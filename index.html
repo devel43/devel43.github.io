@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+          margin: 0;
+          padding: 0;
+        }
+        #container {
+            width: 300px;
+            height: 300px;
+            border: 1px solid black;
+            border-radius: 50%;
+            position: relative;
+            margin: 0;
+            padding: 0;
+        }
+
+        #inner-circle {
+            width: 50px;
+            height: 50px;
+            background-color: blue;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="joystic">
+        <div id="container">
+            <div id="inner-circle"></div>
+        </div>
+    </div>
+    <h3 id="coordinates"></h3>
+
+    <script>
+        var TRESHOLD = 45
+        var container = document.getElementById('container');
+        var innerCircle = document.getElementById('inner-circle');
+        var coordinates = document.getElementById('coordinates')
+        coordinates.innerText = `Coordinates for send: [0, 0]`
+
+        const ws = new WebSocket('ws://devel43:8080')
+        ws.onopen = () => {
+          ws.send(JSON.stringify({
+            method: 'register',
+            type: 'client',
+            clientId: Number(new Date()),
+          }))
+        }
+
+        window.addEventListener('deviceorientation', handleOrientation);
+
+        function siceRotation(rotation) {
+          if(rotation > TRESHOLD) {
+            return TRESHOLD
+          }
+          if( rotation < -TRESHOLD) {
+            return -TRESHOLD
+          }
+          return rotation
+        }
+
+        function handleOrientation(event) {
+            var x = siceRotation(event.gamma);
+            var y = siceRotation(event.beta);
+            var max = (container.clientWidth - innerCircle.clientWidth) / 2;
+            var correction = max
+
+            var posX = (x / 90) * correction;
+            var posY = (y / 90) * correction;
+            coordinates.innerText = `Coordinates for send: [${x / TRESHOLD}, ${y / TRESHOLD}]`
+            ws.send(JSON.stringify([x / TRESHOLD, y / TRESHOLD]))
+            innerCircle.style.transform = `translate(${posX}px, ${posY}px)`;
+        }
+    </script>
+</body>
+</html>
