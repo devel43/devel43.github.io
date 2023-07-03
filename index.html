@@ -45,7 +45,7 @@
         var coordinates = document.getElementById('coordinates')
         coordinates.innerText = `Coordinates for send: [0, 0]`
 
-        const ws = new WebSocket('wss://devel43.ru')
+        const ws = new WebSocket('wss://devel43:8080')
         ws.onopen = () => {
           ws.send(JSON.stringify({
             method: 'register',
