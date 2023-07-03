@@ -45,14 +45,14 @@
         var coordinates = document.getElementById('coordinates')
         coordinates.innerText = `Coordinates for send: [0, 0]`
 
-        const ws = new WebSocket('ws://devel43:8080')
-        ws.onopen = () => {
-          ws.send(JSON.stringify({
-            method: 'register',
-            type: 'client',
-            clientId: Number(new Date()),
-          }))
-        }
+        // const ws = new WebSocket('ws://devel43:8080')
+        // ws.onopen = () => {
+        //   ws.send(JSON.stringify({
+        //     method: 'register',
+        //     type: 'client',
+        //     clientId: Number(new Date()),
+        //   }))
+        // }
 
         window.addEventListener('deviceorientation', handleOrientation);
 
@@ -75,7 +75,7 @@
             var posX = (x / 90) * correction;
             var posY = (y / 90) * correction;
             coordinates.innerText = `Coordinates for send: [${x / TRESHOLD}, ${y / TRESHOLD}]`
-            ws.send(JSON.stringify([x / TRESHOLD, y / TRESHOLD]))
+            // ws.send(JSON.stringify([x / TRESHOLD, y / TRESHOLD]))
             innerCircle.style.transform = `translate(${posX}px, ${posY}px)`;
         }
     </script>
